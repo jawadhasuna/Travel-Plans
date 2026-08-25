@@ -1,18 +1,19 @@
 FROM python:3.12-slim
 
-# Hugging Face Spaces runs the container as a non-root user with uid 1000.
-# Files written by root are unreadable to it, so create that user up front.
-RUN useradd -m -u 1000 user
-USER user
-ENV PATH="/home/user/.local/bin:$PATH"
+# Run as a non-root user. Cloud Run does not require it, but a container that
+# never needs root should not have it.
+RUN useradd -m -u 1000 app
+USER app
+ENV PATH="/home/app/.local/bin:$PATH"
 
 WORKDIR /app
 
-COPY --chown=user requirements.txt .
+COPY --chown=app requirements.txt .
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
-COPY --chown=user . .
+COPY --chown=app . .
 
-# Spaces routes public traffic to port 7860.
-EXPOSE 7860
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "7860"]
+# Cloud Run tells the container which port to listen on through $PORT and will
+# not route traffic to anything else. The default is only for running locally.
+ENV PORT=8080
+CMD exec uvicorn app:app --host 0.0.0.0 --port ${PORT}

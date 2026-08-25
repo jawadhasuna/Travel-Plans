@@ -1,14 +1,3 @@
----
-title: Travel Plans Agents
-emoji: 🧭
-colorFrom: green
-colorTo: blue
-sdk: docker
-app_port: 7860
-pinned: false
-short_description: Four AI agents plan a trip together
----
-
 # Travel Plans — agent backend
 
 The API behind [travelsplan.vercel.app](https://travelsplan.vercel.app). Four
@@ -38,11 +27,26 @@ is currently running.
 
 ## Configuration
 
-One secret, set under Settings → Variables and secrets:
+One environment variable:
 
 | | |
 |---|---|
 | `GOOGLE_API_KEY` | a Gemini API key from [aistudio.google.com](https://aistudio.google.com/apikey) |
+
+Set it on the service rather than baking it into the image:
+
+```bash
+gcloud run services update travel-plans --region us-central1 --update-env-vars GOOGLE_API_KEY=your_key
+```
+
+## Deploying
+
+```bash
+gcloud run deploy travel-plans --source . --region us-central1 --allow-unauthenticated
+```
+
+Cloud Build reads the Dockerfile, builds the image, and Cloud Run serves it,
+scaling to zero when nobody is using it.
 
 ## Notes on the free tier
 
