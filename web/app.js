@@ -191,6 +191,34 @@ function handle(eventName, data) {
   }
 }
 
+/* ---------- which part of the drawing to show ----------
+ *
+ * The scene is wider than it is tall, so on a portrait phone the browser has to
+ * crop it. Centring the crop lands on the wing and engine — the least
+ * interesting part. Anchoring left instead keeps the family and the boarding
+ * stairs on screen, which is the bit worth seeing.
+ */
+
+const scene = document.querySelector("svg.scene");
+
+const WIDE = "0 0 1440 900";
+// A taller frame on portrait: same drawing, scaled down, so more of it fits
+// across a narrow screen. Enough to reach the door and the top of the stairs.
+const TALL = "0 -180 1440 1080";
+
+function frameScene() {
+  const portrait = window.innerWidth < 820 && window.innerHeight > window.innerWidth;
+  scene.setAttribute("viewBox", portrait ? TALL : WIDE);
+  scene.setAttribute(
+    "preserveAspectRatio",
+    portrait ? "xMinYMax slice" : "xMidYMax slice"
+  );
+}
+
+frameScene();
+window.addEventListener("resize", frameScene);
+window.addEventListener("orientationchange", frameScene);
+
 /* ---------- wiring ---------- */
 
 goButton.addEventListener("click", plan);
