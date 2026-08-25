@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Travel Plans</title>
+<meta name="description" content="Four AI agents plan a trip together — flights, hotels, and a day-by-day itinerary.">
+<link rel="icon" href="icon.svg">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <img src="icon.svg" alt="" class="logo">
+    <h1>Travel Plans</h1>
+  </div>
+  <span class="sub">four agents, one trip</span>
+</header>
+
+<main>
+
+  <section class="ask">
+    <label for="request">Where are you going?</label>
+    <div class="row">
+      <input id="request" type="text" autocomplete="off"
+             placeholder="5 days in Istanbul in March, mid budget, flying from Lahore"
+             maxlength="500">
+      <button id="go" type="button">Plan it</button>
+    </div>
+    <div class="examples" id="examples">
+      <button type="button">3 days in Istanbul, budget, from Lahore</button>
+      <button type="button">A week in Japan for cherry blossom season</button>
+      <button type="button">Weekend in Dubai, luxury, from Islamabad</button>
+    </div>
+    <p class="status" id="status"></p>
+  </section>
+
+  <section class="crew" id="crew" hidden>
+    <div class="agent" data-agent="flights_agent">
+      <div class="agent-head"><span class="pip"></span><h2>Flights</h2><span class="state">waiting</span></div>
+      <div class="body"></div>
+    </div>
+    <div class="agent" data-agent="hotels_agent">
+      <div class="agent-head"><span class="pip"></span><h2>Hotels</h2><span class="state">waiting</span></div>
+      <div class="body"></div>
+    </div>
+    <div class="agent" data-agent="itinerary_agent">
+      <div class="agent-head"><span class="pip"></span><h2>Itinerary</h2><span class="state">waiting</span></div>
+      <div class="body"></div>
+    </div>
+  </section>
+
+  <section class="plan" id="plan" hidden>
+    <div class="agent-head"><span class="pip"></span><h2>The plan</h2><span class="state">waiting</span></div>
+    <div class="body" id="plan-body"></div>
+  </section>
+
+  <p class="note">
+    Three specialists research your trip at the same time, then a fourth agent
+    writes them up as one plan. Built with Google ADK and Gemini &mdash;
+    <a href="https://github.com/jawadhasuna/Travel-Plans" target="_blank" rel="noopener">source</a>.
+  </p>
+
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
