@@ -1,6 +1,6 @@
 /* Travel Plans — front end
  *
- * Talks to the agent backend on Hugging Face Spaces. The backend streams
+ * Talks to the agent backend on Cloud Run. The backend streams
  * Server-Sent Events, one per agent, so the three specialists fill in as they
  * finish rather than the page sitting blank for half a minute.
  */
