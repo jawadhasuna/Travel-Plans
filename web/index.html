@@ -6,9 +6,195 @@
 <title>Travel Plans</title>
 <meta name="description" content="Four AI agents plan a trip together — flights, hotels, and a day-by-day itinerary.">
 <link rel="icon" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
+<!-- The whole scene is drawn here rather than loaded as an image: it scales to
+     any window without going fuzzy, and the clouds and plane can drift. -->
+<svg class="scene" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+
+  <!-- sky -->
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8fd3f4"/>
+      <stop offset="55%" stop-color="#c6e9fa"/>
+      <stop offset="100%" stop-color="#e8f6fd"/>
+    </linearGradient>
+    <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8ed99f"/>
+      <stop offset="100%" stop-color="#6cc48a"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1440" height="900" fill="url(#sky)"/>
+
+  <!-- sun -->
+  <g class="sun">
+    <circle cx="1230" cy="130" r="58" fill="#ffd166"/>
+    <circle cx="1230" cy="130" r="76" fill="#ffd166" opacity="0.25"/>
+  </g>
+
+  <!-- clouds, each drifting at its own pace -->
+  <g fill="#ffffff">
+    <g class="cloud cloud-a">
+      <ellipse cx="180" cy="140" rx="58" ry="38"/>
+      <ellipse cx="232" cy="152" rx="44" ry="30"/>
+      <ellipse cx="130" cy="158" rx="40" ry="26"/>
+    </g>
+    <g class="cloud cloud-b" opacity="0.92">
+      <ellipse cx="640" cy="96" rx="46" ry="30"/>
+      <ellipse cx="684" cy="106" rx="34" ry="23"/>
+      <ellipse cx="600" cy="110" rx="30" ry="20"/>
+    </g>
+    <g class="cloud cloud-c" opacity="0.85">
+      <ellipse cx="980" cy="220" rx="52" ry="33"/>
+      <ellipse cx="1028" cy="230" rx="38" ry="25"/>
+      <ellipse cx="936" cy="234" rx="34" ry="22"/>
+    </g>
+  </g>
+
+  <!-- rolling hills behind the airfield -->
+  <path d="M0 620 Q 180 548 380 606 T 760 596 Q 980 548 1180 604 T 1440 592 L1440 900 L0 900 Z" fill="#a5e0b4"/>
+  <path d="M0 672 Q 240 618 520 668 T 1040 660 Q 1260 626 1440 664 L1440 900 L0 900 Z" fill="url(#ground)"/>
+
+  <!-- tarmac -->
+  <path d="M-20 742 L1460 716 L1460 900 L-20 900 Z" fill="#9aa7b4"/>
+  <path d="M-20 742 L1460 716 L1460 736 L-20 762 Z" fill="#b4c0cb"/>
+  <g stroke="#e9eef2" stroke-width="7" stroke-linecap="round" opacity="0.8">
+    <path d="M60 830 L170 828"/>
+    <path d="M250 826 L360 824"/>
+    <path d="M440 822 L550 820"/>
+    <path d="M1150 812 L1260 810"/>
+  </g>
+
+  <!-- ================= the plane ================= -->
+  <g class="plane">
+    <!-- far wing -->
+    <path d="M905 596 L1040 528 L1082 536 L975 606 Z" fill="#cfd9e4" stroke="#33415c" stroke-width="6" stroke-linejoin="round"/>
+
+    <!-- tail fin -->
+    <path d="M1148 596 L1208 452 L1252 452 L1240 598 Z" fill="#3ba88f" stroke="#33415c" stroke-width="7" stroke-linejoin="round"/>
+    <path d="M1196 596 L1236 496 L1250 496 L1244 598 Z" fill="#2f8b76"/>
+
+    <!-- fuselage -->
+    <path d="M296 640 Q 300 578 392 570 L1130 556 Q 1234 554 1258 600 Q 1268 626 1244 646 L420 668 Q 300 670 296 640 Z"
+          fill="#fdfefe" stroke="#33415c" stroke-width="8" stroke-linejoin="round"/>
+
+    <!-- teal stripe down the body -->
+    <path d="M330 654 Q 470 638 700 632 L1150 620 Q 1230 618 1246 634 L1244 646 L420 668 Q 336 668 330 654 Z" fill="#3ba88f" opacity="0.9"/>
+
+    <!-- cockpit -->
+    <path d="M316 616 Q 330 588 372 584 L404 582 L400 618 L318 624 Z" fill="#9fd7f0" stroke="#33415c" stroke-width="6" stroke-linejoin="round"/>
+
+    <!-- windows -->
+    <g fill="#9fd7f0" stroke="#33415c" stroke-width="4">
+      <circle cx="500" cy="606" r="13"/>
+      <circle cx="560" cy="604" r="13"/>
+      <circle cx="620" cy="602" r="13"/>
+      <circle cx="680" cy="600" r="13"/>
+      <circle cx="740" cy="598" r="13"/>
+      <circle cx="800" cy="596" r="13"/>
+      <circle cx="860" cy="594" r="13"/>
+      <circle cx="920" cy="592" r="13"/>
+      <circle cx="966" cy="591" r="13"/>
+      <circle cx="1010" cy="590" r="13"/>
+      <circle cx="1070" cy="588" r="13"/>
+    </g>
+
+    <!-- doorway the family walks into -->
+    <rect x="440" y="580" width="44" height="62" rx="18" fill="#ffe6a7" stroke="#33415c" stroke-width="6"/>
+
+    <!-- near wing, in front of the body -->
+    <path d="M700 636 L560 736 L640 742 L836 646 Z" fill="#e4ebf2" stroke="#33415c" stroke-width="7" stroke-linejoin="round"/>
+
+    <!-- engine -->
+    <rect x="612" y="654" width="112" height="56" rx="26" fill="#cfd9e4" stroke="#33415c" stroke-width="7"/>
+    <ellipse cx="620" cy="682" rx="12" ry="26" fill="#8fa2b5" stroke="#33415c" stroke-width="5"/>
+
+    <!-- wheels -->
+    <g fill="#3c4a60" stroke="#33415c" stroke-width="5">
+      <circle cx="404" cy="700" r="24"/>
+      <circle cx="836" cy="716" r="27"/>
+      <circle cx="896" cy="716" r="27"/>
+    </g>
+    <g fill="#8fa2b5">
+      <circle cx="404" cy="700" r="9"/>
+      <circle cx="836" cy="716" r="10"/>
+      <circle cx="896" cy="716" r="10"/>
+    </g>
+  </g>
+
+  <!-- ================= boarding stairs ================= -->
+  <g stroke="#33415c" stroke-width="6" stroke-linejoin="round">
+    <path d="M440 642 L328 768 L412 768 L512 642 Z" fill="#dfe6ee"/>
+    <g stroke-width="5" stroke="#9aa7b4" fill="none">
+      <path d="M354 740 L428 740"/>
+      <path d="M380 712 L452 712"/>
+      <path d="M406 684 L478 684"/>
+    </g>
+    <path d="M434 632 L322 758" fill="none" stroke="#33415c" stroke-width="6"/>
+  </g>
+
+  <!-- ================= the family ================= -->
+
+  <!-- dad, carrying a case -->
+  <g transform="translate(-400,0)"><g class="traveller">
+    <ellipse cx="470" cy="800" rx="30" ry="7" fill="#7d8b99" opacity="0.35"/>
+    <path d="M452 792 L452 748 L488 748 L488 792" fill="#3d5a80" stroke="#33415c" stroke-width="5" stroke-linejoin="round"/>
+    <rect x="446" y="700" width="48" height="56" rx="18" fill="#ef8354" stroke="#33415c" stroke-width="5"/>
+    <circle cx="470" cy="676" r="23" fill="#f2c1a0" stroke="#33415c" stroke-width="5"/>
+    <path d="M450 664 Q 470 646 490 664 Q 470 658 450 664 Z" fill="#4a3728"/>
+    <path d="M494 714 L516 724" stroke="#33415c" stroke-width="6" stroke-linecap="round"/>
+    <rect x="506" y="724" width="42" height="34" rx="7" fill="#e0435c" stroke="#33415c" stroke-width="5"/>
+    <path d="M518 724 L518 716 L536 716 L536 724" fill="none" stroke="#33415c" stroke-width="4"/>
+  </g></g>
+
+  <!-- mum, pulling a wheeled case -->
+  <g transform="translate(-400,0)"><g class="traveller traveller-b">
+    <ellipse cx="576" cy="802" rx="30" ry="7" fill="#7d8b99" opacity="0.35"/>
+    <path d="M560 794 L560 752 L592 752 L592 794" fill="#5c4b8a" stroke="#33415c" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M550 706 L602 706 L610 760 L542 760 Z" fill="#f4a261" stroke="#33415c" stroke-width="5" stroke-linejoin="round"/>
+    <circle cx="576" cy="682" r="23" fill="#e8b48d" stroke="#33415c" stroke-width="5"/>
+    <path d="M553 682 Q 552 650 576 650 Q 600 650 599 682 Q 592 664 576 666 Q 560 664 553 682 Z" fill="#6b3f2a"/>
+    <path d="M604 718 L634 730" stroke="#33415c" stroke-width="6" stroke-linecap="round"/>
+    <rect x="628" y="726" width="46" height="58" rx="9" fill="#2a9d8f" stroke="#33415c" stroke-width="5"/>
+    <path d="M640 726 L640 706 L662 706 L662 726" fill="none" stroke="#33415c" stroke-width="4"/>
+    <circle cx="640" cy="790" r="7" fill="#33415c"/>
+    <circle cx="662" cy="790" r="7" fill="#33415c"/>
+  </g></g>
+
+  <!-- kid with a backpack -->
+  <g transform="translate(-400,0)"><g class="traveller traveller-c">
+    <ellipse cx="672" cy="806" rx="22" ry="6" fill="#7d8b99" opacity="0.35"/>
+    <path d="M662 800 L662 772 L686 772 L686 800" fill="#3d5a80" stroke="#33415c" stroke-width="4" stroke-linejoin="round"/>
+    <rect x="656" y="738" width="36" height="42" rx="14" fill="#ffd166" stroke="#33415c" stroke-width="4"/>
+    <rect x="646" y="742" width="18" height="30" rx="8" fill="#e07a5f" stroke="#33415c" stroke-width="4"/>
+    <circle cx="674" cy="720" r="18" fill="#f2c1a0" stroke="#33415c" stroke-width="4"/>
+    <path d="M657 712 Q 674 696 691 712 Q 674 706 657 712 Z" fill="#2f2418"/>
+  </g></g>
+
+  <!-- toddler, waving -->
+  <g transform="translate(-400,0)"><g class="traveller traveller-d">
+    <ellipse cx="746" cy="810" rx="19" ry="5" fill="#7d8b99" opacity="0.35"/>
+    <path d="M738 806 L738 784 L756 784 L756 806" fill="#5c4b8a" stroke="#33415c" stroke-width="4" stroke-linejoin="round"/>
+    <rect x="732" y="756" width="30" height="34" rx="12" fill="#8ecae6" stroke="#33415c" stroke-width="4"/>
+    <circle cx="747" cy="740" r="16" fill="#e8b48d" stroke="#33415c" stroke-width="4"/>
+    <path d="M732 734 Q 747 720 762 734 Q 747 728 732 734 Z" fill="#4a3728"/>
+    <path class="wave" d="M762 762 L780 748" stroke="#33415c" stroke-width="5" stroke-linecap="round"/>
+  </g></g>
+
+  <!-- a case left on the tarmac -->
+  <g>
+    <rect x="1120" y="742" width="52" height="40" rx="8" fill="#f4a261" stroke="#33415c" stroke-width="5"/>
+    <path d="M1134 742 L1134 732 L1158 732 L1158 742" fill="none" stroke="#33415c" stroke-width="4"/>
+    <path d="M1120 758 L1172 758" stroke="#33415c" stroke-width="3" opacity="0.5"/>
+  </g>
+
+</svg>
 
 <header class="topbar">
   <div class="brand">
