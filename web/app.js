@@ -5,11 +5,12 @@
  * finish rather than the page sitting blank for half a minute.
  */
 
-// Where the agents live. Override in the browser console with
+// Where the agents live: a container on Cloud Run that scales to zero when
+// nobody is using it. Override in the browser console with
 // localStorage.setItem("backend", "http://127.0.0.1:7863") when testing locally.
 const BACKEND =
   localStorage.getItem("backend") ||
-  "https://jawadhasuna-travel-plans.hf.space";
+  "https://travel-plans-419840293627.us-central1.run.app";
 
 const $ = (id) => document.getElementById(id);
 const input = $("request");
