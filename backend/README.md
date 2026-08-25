@@ -11,7 +11,7 @@ short_description: Four AI agents plan a trip together
 
 # Travel Plans — agent backend
 
-The API behind [travelplans.vercel.app](https://travelplans.vercel.app). Four
+The API behind [travelsplan.vercel.app](https://travelsplan.vercel.app). Four
 Google ADK agents on Gemini: three specialists research flights, hotels and an
 itinerary at the same time, then a fourth writes them up as one plan.
 
